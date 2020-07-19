@@ -86,7 +86,10 @@ class CorsMiddleware(MiddlewareMixin):
                 and "HTTP_ACCESS_CONTROL_REQUEST_METHOD" in request.META
             ):
                 response = http.HttpResponse()
-                response["Content-Length"] = "0"
+                response[ACCESS_CONTROL_ALLOW_HEADERS] = ", ".join(conf.CORS_ALLOW_HEADERS)
+                response[ACCESS_CONTROL_ALLOW_METHODS] = ", ".join(conf.CORS_ALLOW_METHODS)
+                if conf.CORS_PREFLIGHT_MAX_AGE:
+                    response[ACCESS_CONTROL_MAX_AGE] = conf.CORS_PREFLIGHT_MAX_AGE
                 return response
 
     def process_view(self, request, callback, callback_args, callback_kwargs):
